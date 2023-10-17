@@ -35,7 +35,7 @@ const AppDataSource = new DataSource({
     // maxQueryExecutionTime: 2000 // 2 seg.
 
     
-    database: 'maquinaVirtual', // se for SQLite, então use bdaula.sqlite
+    database: 'vendas', // se for SQLite, então use bdaula.sqlite
     type: "mysql", // se for SQLite, então use sqlite
     host: '172.16.13.151', // não use esta propriedade se for sqlite
     port: 3306, // não use esta propriedade se for sqlite
