@@ -17,8 +17,7 @@ import { avisoDeletar } from "../controllers/avisoConcluido";
 import { avisoErroDeletar } from "../controllers/avisoErro";
 import { Link } from "react-router-dom";
 import { Products } from "../types";
-import Header from "../components/Header";
-import Authentication from "../components/Authentication";
+
 
 const ListagemCall: React.FC = () => {
 
@@ -149,7 +148,6 @@ const ListagemCall: React.FC = () => {
                   Preço
                   {order === "ASC" ? <FaSortUp /> : <FaSortDown />}
                 </th>
-
                 <th className="text-center">Ações</th>
               </tr>
             </thead>
@@ -175,6 +173,9 @@ const ListagemCall: React.FC = () => {
                       <td className="text-center">
                         <Link to={"/editar/" + data.id}>
                           <img style={{ width: '25px' }} src={editar} alt='Editar' />
+                      <td className="text-center">
+                        <Link to={"/editar/" + data.id}>
+                            <img style={{ width: '25px' }} src={editar} alt='Editar' />
                         </Link>
                         <img
                           style={{ width: "35px" }}
