@@ -116,8 +116,8 @@ svg{
 }
 
 .bg-div{
-  min-height: 95vh;
- background-color: plum;
+  min-height: 100vh;
+  background-color: plum;
 }
 
 .hf-spacing{

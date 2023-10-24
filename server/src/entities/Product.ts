@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, JoinColumn, M
 import { User } from "./User";
 import { Order } from "./Order";
 
+
 @Entity({name:"product"})
 export class Product {
     // define a chave primária como auto incremento
@@ -19,4 +20,5 @@ export class Product {
 
     @OneToMany(() => Order, (order) => order.product)
     order: Order[];
+
 }

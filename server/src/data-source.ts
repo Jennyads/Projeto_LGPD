@@ -34,7 +34,6 @@ const AppDataSource = new DataSource({
     // subscribers: [],
     // maxQueryExecutionTime: 2000 // 2 seg.
 
-    
     database: 'pedidos', // se for SQLite, então use bdaula.sqlite
     type: "mysql", // se for SQLite, então use sqlite
     host: 'localhost', // não use esta propriedade se for sqlite

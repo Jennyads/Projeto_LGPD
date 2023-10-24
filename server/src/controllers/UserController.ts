@@ -4,6 +4,7 @@ import { User } from "../entities/User";
 import { Historic } from "../entities/Historic";
 
 
+
 class UserController {
 
     public async getHistoricUser (req: Request, res: Response) : Promise<Response> {
@@ -46,7 +47,6 @@ class UserController {
         return res.json(allUser)
     }
 
-
     public async deleteUser(req: Request, res: Response): Promise<Response> {
         const idUser: any = req.params.uuid;
         const userRepository = AppDataSource.getRepository(User);
@@ -65,6 +65,7 @@ class UserController {
         await historicRepository.save(historicRecord);
         return res.json(removedUser);
       }
+
 
 }
 export default new UserController();

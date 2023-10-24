@@ -19,8 +19,7 @@ import { Link } from "react-router-dom";
 import { Products } from "../types";
 
 
-
-function ListagemCall() {
+const ListagemCall: React.FC = () => {
 
   const url_atual = window.location.href;
   const id = window.location.href.split("/")[4]
@@ -45,15 +44,15 @@ function ListagemCall() {
   //delete
   async function handleDeleteCall(id: number) {
     try {
-     avisoDeletar().then( async (result) => {
-        if(result.isConfirmed){
+      avisoDeletar().then(async (result) => {
+        if (result.isConfirmed) {
           await axios.delete(`${URI.DELETE_PRODUTO}${id}`);
           const updatedCalls = data.filter((call) => call.id !== id);
           setData(updatedCalls);
         }
-        
+
       })
-      
+
     } catch (error) {
       console.error(error);
       avisoErroDeletar();
@@ -149,7 +148,6 @@ function ListagemCall() {
                   Preço
                   {order === "ASC" ? <FaSortUp /> : <FaSortDown />}
                 </th>
-               
                 <th className="text-center">Ações</th>
               </tr>
             </thead>
@@ -171,7 +169,10 @@ function ListagemCall() {
                       </td>
                       <td className="text-center">{data.prodTitle}</td>
                       <td className="text-center">{data.prodPrice}</td>
-          
+
+                      <td className="text-center">
+                        <Link to={"/editar/" + data.id}>
+                          <img style={{ width: '25px' }} src={editar} alt='Editar' />
                       <td className="text-center">
                         <Link to={"/editar/" + data.id}>
                             <img style={{ width: '25px' }} src={editar} alt='Editar' />

@@ -1,39 +1,34 @@
 import Header from "./components/Header";
 import './App.css';
 import Solicitacao from "./pages/Solicitacao";
-import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import ListagemCall from "./pages/Listagem";
-import EditarCall from "./pages/Editar";
+import { useState } from "react";
+import Authentication from "./components/Authentication";
 
 function App() {
+  const [authenticated, setAuthenticated] = useState(false);
+
+  const handleLogin = (key: string) => {
+    setAuthenticated(true);
+  };
 
   return (
     <>
+    <Header />
       <div className="bg-div">
-
-        <Header /> 
-
-        <div className='d-flex flex-center flex-column flex-column-fluid hf-spacing px-2 mt-5'>
-          
-          <div className='container bg-light-opacity rounded mx-auto' style={{padding:"2rem"}}>
+        <div className='d-flex flex-center flex-column flex-column-fluid hf-spacing'>
+          <div className='container bg-light-opacity rounded mx-auto' style={{ padding: "2rem" }}>
             <Routes>
-                <Route path="/" element={<Solicitacao />} />
-                <Route path="/listagem" element={<ListagemCall />} />
-                <Route path="editar/:id" element={<EditarCall />} />
+              <Route path="/" element={<Solicitacao />} />
+              <Route path="/listagem" element={authenticated ? <ListagemCall /> : <Authentication onLogin={handleLogin} />} />
             </Routes>
           </div>
-              
         </div>
-        
-      </div> 
-    
-
-    </>  
+      </div>
+    </>
   );
 }
 
 export default App;
 
-
-
- 
