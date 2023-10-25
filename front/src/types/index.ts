@@ -1,8 +1,11 @@
 export const initialValues = {
     prodTitle: "",
     prodDescription: "",
-    prodPrice: ""
-
+    prodPrice: "",
+    userName: "",
+    userEmail: "",
+    userCpf: "",
+    userAddress: "",
 }
 
 export interface Products {
@@ -13,3 +16,10 @@ export interface Products {
 
 }
 
+export interface User {
+    userId: number;
+    userName: string;
+    userEmail: string;
+    userCpf: string;
+    userAddress: string;
+}

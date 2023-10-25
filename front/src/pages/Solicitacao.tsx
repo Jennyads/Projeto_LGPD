@@ -45,14 +45,14 @@ function Solicitacao() {
         style={{ margin: "8px" }}
       >
         <div className="text-center mb-4">
-          <h1 className="text-dark fw-bolder mb-3 font-padrao-titulo">
-            CADASTRAR PRODUTO
+          <h1 className="text-dark mb-3 font-padrao-titulo">
+            Cadastrar Pedido
           </h1>
           <div
             className="text-gray-500 fs-6 font-padrao-titulo mb-5"
             style={{ letterSpacing: 0 }}
           >
-            Preencha os campos para cadastrar um produto!
+            Preencha os campos a seguir para cadastrar um novo pedido
           </div>
         </div>
 
