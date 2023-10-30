@@ -5,10 +5,10 @@ export class Historic {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "text" }) 
+  @Column({ type: "varchar", length: 100 }) 
   action: string;
 
-  @Column({ type: "datetime", length: 100 })
+  @Column({ type: "datetime" })
   timestamp: Date;
 
   @Column({ type: "varchar", length: 20 })

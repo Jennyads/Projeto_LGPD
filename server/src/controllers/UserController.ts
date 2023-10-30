@@ -2,6 +2,7 @@ import AppDataSource from "../data-source";
 import { Request, Response } from 'express';
 import { User } from "../entities/User";
 import { Historic } from "../entities/Historic";
+import { createConnection, Connection } from 'mysql2/promise';
 
 
 class UserController {
@@ -20,18 +21,59 @@ class UserController {
         return res.json(allUser)
     }
 
-    public async postUser (req: Request, res: Response) : Promise<Response> {
-        const createUser = req.body
-        const userRepository = AppDataSource.getRepository(User)
+    public async postUser(req: Request, res: Response): Promise<Response> {
+        const createUser = req.body;
+        const userRepository = AppDataSource.getRepository(User);
         const insertUser = new User();
-        insertUser.userName = createUser.userName
-        insertUser.userCpf = createUser.userCpf
-        insertUser.userEmail = createUser.userEmail
-        insertUser.userAddress = createUser.userAddress
-     
-        const allUser = await userRepository.save(insertUser)
-        return res.json(allUser)
+        insertUser.userName = createUser.userName;
+        insertUser.userCpf = createUser.userCpf;
+        insertUser.userEmail = createUser.userEmail;
+        insertUser.userAddress = createUser.userAddress;
+        console.log(insertUser)
+    
+        // Construa a instrução SQL para inserir o usuário na tabela "user" (seu banco de dados principal)
+        const userSqlStatement = `
+            INSERT INTO user (userName, userCpf, userEmail, userAddress)
+            VALUES ('${insertUser.userName}', '${insertUser.userCpf}', '${insertUser.userEmail}', '${insertUser.userAddress}')
+        `;
+    
+        try {
+            // Execute a instrução SQL principal para inserir o usuário na tabela "user"
+            const allUser = await userRepository.save(insertUser);
+            console.log(allUser)
+    
+            // Estabeleça uma segunda conexão com o banco de dados de registro
+            const logConnection: Connection = await createConnection({
+                host: 'localhost',
+                user: 'root',
+                password: 'africas2lucas',
+                database: 'registros',
+            });
+    
+            // Construa a instrução SQL para registrar a ação na tabela de logs
+            const logSqlStatement = `
+                INSERT INTO sql_log (timestamp, sql_statement)
+                VALUES (NOW(), '${userSqlStatement.replace(/'/g, "''")}')
+            `;
+            console.log(logSqlStatement)
+    
+            // Abra a conexão com o banco de dados de registros
+            await logConnection.connect();
+    
+            // Registre a instrução SQL no log no banco de dados de registros
+            await logConnection.query(logSqlStatement);
+    
+            // Feche a conexão com o banco de dados de registros
+            await logConnection.end();
+    
+            return res.json(allUser);
+        } catch (error) {
+            console.log(error)
+            // Lide com erros
+            return res.status(500).json({ error: "Erro ao inserir usuário." });
+        }
     }
+    
 
     public async putUser (req: Request, res: Response) : Promise<Response> {
         const createUser = req.body

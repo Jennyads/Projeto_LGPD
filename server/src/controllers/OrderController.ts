@@ -34,7 +34,7 @@ class OrderController {
         return res.json(allOrder)
     }
 
-    public async putGroup (req: Request, res: Response) : Promise<Response> {
+    public async putOrder (req: Request, res: Response) : Promise<Response> {
         const createOrder = req.body
         const idOrder:any = req.params.uuid
         const orderRepository = AppDataSource.getRepository(Order)
@@ -47,7 +47,7 @@ class OrderController {
         return res.json(allOrder)
     }
 
-    public async deleteGroup (req: Request, res: Response) : Promise<Response> {
+    public async deleteOrder (req: Request, res: Response) : Promise<Response> {
         const idOrder:any = req.params.uuid
         const orderRepository = AppDataSource.getRepository(Order)
         const findOrder = await orderRepository.findOneBy({id: idOrder})
