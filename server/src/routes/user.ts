@@ -10,5 +10,7 @@ routes.post('/create', UserController.postUser);
 routes.put('/modify/:uuid', UserController.putUser);
 
 routes.delete('/delete/:uuid', UserController.deleteUser);
+
+routes.get('/unapplied', UserController.getUnappliedLogs);
 export default routes;
 

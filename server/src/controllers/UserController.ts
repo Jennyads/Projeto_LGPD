@@ -52,8 +52,8 @@ class UserController {
     
             // Construa a instrução SQL para registrar a ação na tabela de logs
             const logSqlStatement = `
-                INSERT INTO sql_log (timestamp, sql_statement)
-                VALUES (NOW(), '${userSqlStatement.replace(/'/g, "''")}')
+                INSERT INTO sql_log (timestamp, sql_statement, applied)
+                VALUES (NOW(), '${userSqlStatement.replace(/'/g, "''")}', false)
             `;
             console.log(logSqlStatement)
     
@@ -74,6 +74,36 @@ class UserController {
         }
     }
     
+    public async getUnappliedLogs(req: Request, res: Response): Promise<Response> {
+        try {
+            // Estabeleça uma conexão com o banco de registros
+            const logConnection: Connection = await createConnection({
+                host: 'localhost',
+                user: 'root',
+                password: 'africas2lucas',
+                database: 'registros',
+            });
+    
+            // Construa a instrução SQL para selecionar registros com "applied" igual a false
+            const selectSqlStatement = `
+                SELECT * FROM sql_log WHERE applied = false
+            `;
+    
+            // Abra a conexão com o banco de registros
+            await logConnection.connect();
+    
+            // Execute a instrução SQL para obter os registros não aplicados
+            const [rows] = await logConnection.query(selectSqlStatement);
+    
+            // Feche a conexão com o banco de registros
+            await logConnection.end();
+    
+            return res.json(rows);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ error: "Erro ao buscar registros não aplicados." });
+        }
+    }
 
     public async putUser (req: Request, res: Response) : Promise<Response> {
         const createUser = req.body
