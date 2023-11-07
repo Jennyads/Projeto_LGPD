@@ -2,7 +2,7 @@ import AppDataSource from "../data-source";
 import { Request, Response } from 'express';
 import { User } from "../entities/User";
 import { Historic } from "../entities/Historic";
-import { createConnection, Connection } from 'mysql2/promise';
+import { createConnection, Connection, RowDataPacket } from 'mysql2/promise';
 
 
 class UserController {
@@ -49,12 +49,17 @@ class UserController {
                 password: 'africas2lucas',
                 database: 'registros',
             });
+
+            const userId = allUser.id; // Supondo que o ID seja armazenado na propriedade "id"
+            const userSqlStatement = `INSERT INTO user (id) VALUES (${userId})`;
+
     
             // Construa a instrução SQL para registrar a ação na tabela de logs
             const logSqlStatement = `
                 INSERT INTO sql_log (timestamp, sql_statement, applied)
                 VALUES (NOW(), '${userSqlStatement.replace(/'/g, "''")}', false)
             `;
+
             console.log(logSqlStatement)
     
             // Abra a conexão com o banco de dados de registros
