@@ -123,25 +123,83 @@ class UserController {
         return res.json(allUser)
     }
 
+    // public async deleteUser(req: Request, res: Response): Promise<Response> {
+    //     const idUser: any = req.params.uuid;
+    //     const userRepository = AppDataSource.getRepository(User);
+    //     const findUser = await userRepository.findOneBy({ id: idUser });
+      
+    //     if (!findUser) {
+    //       return res.status(404).json({ message: "User not found" });
+    //     }
+    //     const removedUser = await userRepository.remove(findUser);
+
+    //     const historicRepository = AppDataSource.getRepository(Historic);
+    //     const historicRecord = new Historic();
+    //     historicRecord.action = `User with ID ${findUser.id} deleted`;
+    //     historicRecord.timestamp = new Date();
+    //     historicRecord.entityType = "User";
+    //     await historicRepository.save(historicRecord);
+    //     return res.json(removedUser);
+    //   }
 
     public async deleteUser(req: Request, res: Response): Promise<Response> {
         const idUser: any = req.params.uuid;
         const userRepository = AppDataSource.getRepository(User);
-        const findUser = await userRepository.findOneBy({ id: idUser });
-      
-        if (!findUser) {
-          return res.status(404).json({ message: "User not found" });
-        }
-        const removedUser = await userRepository.remove(findUser);
+        const findUser = await userRepository.findOne({ where: { id: idUser } });
 
-        const historicRepository = AppDataSource.getRepository(Historic);
-        const historicRecord = new Historic();
-        historicRecord.action = `User with ID ${findUser.id} deleted`;
-        historicRecord.timestamp = new Date();
-        historicRecord.entityType = "User";
-        await historicRepository.save(historicRecord);
-        return res.json(removedUser);
-      }
+    
+        if (!findUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+    
+        // Construa a instrução SQL para excluir o usuário da tabela "user"
+        const userSqlStatement = `
+            DELETE FROM user
+            WHERE id = '${findUser.id}'
+        `;
+    
+        try {
+            // Execute a instrução SQL principal para excluir o usuário da tabela "user"
+            const removedUser = await userRepository.remove(findUser);
+    
+            // Estabeleça uma segunda conexão com o banco de dados de registro
+            const logConnection: Connection = await createConnection({
+                host: 'localhost',
+                user: 'root',
+                password: 'africas2lucas',
+                database: 'registros',
+            });
+    
+            // Construa a instrução SQL para registrar a ação de exclusão na tabela de logs
+            const logSqlStatement = `
+                INSERT INTO sql_log (timestamp, sql_statement, applied)
+                VALUES (NOW(), '${userSqlStatement.replace(/'/g, "''")}', false)
+            `;
+    
+            // Abra a conexão com o banco de dados de registros
+            await logConnection.connect();
+    
+            // Registre a instrução SQL no log no banco de dados de registros
+            await logConnection.query(logSqlStatement);
+    
+            // Feche a conexão com o banco de dados de registros
+            await logConnection.end();
+    
+            // Registre a ação no histórico
+            const historicRepository = AppDataSource.getRepository(Historic);
+            const historicRecord = new Historic();
+            historicRecord.action = `User with ID ${findUser.id} deleted`;
+            historicRecord.timestamp = new Date();
+            historicRecord.entityType = "User";
+            await historicRepository.save(historicRecord);
+    
+            return res.json(removedUser);
+        } catch (error) {
+            console.log(error);
+            // Lide com erros
+            return res.status(500).json({ error: "Erro ao excluir usuário." });
+        }
+    }
 
 }
 export default new UserController();
