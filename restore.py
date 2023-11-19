@@ -15,64 +15,33 @@ def restore_and_update(connection_pedidos, connection_registros, backup_filename
                 cursor_pedidos.execute("START TRANSACTION;")
                 cursor_registros.execute("START TRANSACTION;")
 
-                # Executa cada comando SQL individualmente
-                for sql_command in sql_commands:
-                    if sql_command.strip():
-                        cursor_pedidos.execute(sql_command)
-                        cursor_registros.execute(sql_command)
+                # Obtém os comandos SQL marcados como "aplicados" na tabela de logs
+                cursor_registros.execute("SELECT sql_statement FROM sql_log WHERE applied = true;")
+                applied_commands = [row[0] for row in cursor_registros.fetchall()]
 
-                # Confirma as alterações e fecha a transação
+                # Executa apenas os comandos marcados como "aplicados" na tabela de logs
+                for sql_command in applied_commands:
+                    if sql_command.strip():
+                        try:
+                            cursor_pedidos.execute(sql_command)
+                        except Error as sql_error:
+                            print(f"Erro ao executar o comando SQL: {sql_error}")
+                            connection_pedidos.rollback()
+                            connection_registros.rollback()
+                
+                # Confirma as alterações nos bancos de dados
                 connection_pedidos.commit()
                 connection_registros.commit()
                 print("Backup restaurado com sucesso.")
 
-                # Execução dos comandos SQL
-                update_script = """
-                    -- Atualização para pedidos.user
-                    UPDATE pedidos.user
-                    SET
-                        id = registros.sql_log.id
-                    WHERE
-                        registros.sql_log.sql_statement LIKE '%DELETE FROM user%'
-                        AND registros.sql_log.applied = 0;
-
-                    -- Marca os registros como aplicados
-                    UPDATE registros.sql_log
-                    SET applied = 1
-                    WHERE sql_statement LIKE '%DELETE FROM user%'
-                    AND applied = 0;
-
-                    -- Exclui registros de pedidos.user
-                    DELETE FROM pedidos.user
-                    WHERE id IN (
-                        SELECT id
-                        FROM registros.sql_log
-                        WHERE sql_statement LIKE '%INSERT INTO user%'
-                        AND applied = 0
-                    );
-
-                    -- Marca os registros como aplicados
-                    UPDATE registros.sql_log
-                    SET applied = 1
-                    WHERE sql_statement LIKE '%INSERT INTO user%'
-                    AND applied = 0;
-                """
-
-                cursor_pedidos.execute(update_script)
-
-                # Confirma as alterações após a execução do script de atualização
-                connection_pedidos.commit()
-                connection_registros.commit()
-                print("Script executado com sucesso.")
-
     except Error as e:
-        # Em caso de erro, realiza rollback
+        # Em caso de erro, realiza rollback em ambos os bancos de dados
         connection_pedidos.rollback()
         connection_registros.rollback()
         print(f"Erro ao restaurar o backup: {str(e)}")
 
     finally:
-        # Restaura o modo de autocommit
+        # Restaura o modo de autocommit em ambos os bancos de dados
         connection_pedidos.autocommit = True
         connection_registros.autocommit = True
 
@@ -82,19 +51,19 @@ if __name__ == "__main__":
             host='localhost',
             database='pedidos',
             user='root',
-            password='africas2lucas'
+            password='12345'
         )
 
         connection_registros = mysql.connector.connect(
             host='localhost',
             database='registros',
             user='root',
-            password='africas2lucas'
+            password='12345'
         )
 
         backup_filename = 'backup.sql'
 
-        # Função para fazer o restore do backup e executar o script de atualização
+        # Função para fazer o restore do backup
         restore_and_update(connection_pedidos, connection_registros, backup_filename)
 
     except Error as e:
