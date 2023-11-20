@@ -29,6 +29,7 @@ class UserController {
         insertUser.userCpf = createUser.userCpf;
         insertUser.userEmail = createUser.userEmail;
         insertUser.userAddress = createUser.userAddress;
+        insertUser.DateCreate = new Date();
         console.log(insertUser)
     
         // Construa a instrução SQL para inserir o usuário na tabela "user" (seu banco de dados principal)

@@ -18,6 +18,10 @@ export class User {
 
     @Column({nullable: false, length: 70})
     userAddress: string;
+
+    @Column({ name: 'DateCreate' })
+    DateCreate: Date;
+
     
     @OneToMany(() => Order, (order) => order.user)
     order: Order[];
