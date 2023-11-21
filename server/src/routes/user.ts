@@ -7,7 +7,7 @@ routes.get('/specific/:uuid', UserController.getUser);
 
 routes.post('/create', UserController.postUser);
 
-routes.put('/modify/:uuid', UserController.putUser);
+//routes.put('/modify/:uuid', UserController.putUser);
 
 routes.delete('/delete/:uuid', UserController.deleteUser);
 
