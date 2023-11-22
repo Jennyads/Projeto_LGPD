@@ -16,6 +16,6 @@ export class PhoneNumber {
     @ManyToOne(() => User, (user) => user.phoneNumbers)
     user: User;
 
-    
+    onDelete: "cascade";
 
 }

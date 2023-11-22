@@ -28,4 +28,6 @@ export class Address {
     @OneToOne(() => User, (user) => user.address)
     @JoinColumn()
     user: User;
+
+    onDelete: "cascade";
 }

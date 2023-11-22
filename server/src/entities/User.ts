@@ -20,13 +20,13 @@ export class User {
     @Column({ name: 'DateCreate' })
     dateCreate: Date;
 
-    @OneToOne(() => Address, { lazy: true })
+    @OneToOne(() => Address, { cascade: true, onDelete: "SET NULL", lazy: true })
     @JoinColumn()
     address: Address;
 
-    @OneToMany(() => PhoneNumber, (phoneNumber) => phoneNumber.user, { cascade: true, eager: false })
+    @OneToMany(() => PhoneNumber, (phoneNumber) => phoneNumber.user, {cascade: true, onDelete: "SET NULL", eager: false })
     phoneNumbers: PhoneNumber[];
-
-    @OneToMany(() => Order, (order) => order.user)
+    
+    @OneToMany(() => Order, (order) => order.user, {onDelete: "SET NULL"})
     order: Order[];
 }
