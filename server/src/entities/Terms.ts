@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "./User";
 
 @Entity({name:"terms"})
 
@@ -18,5 +19,11 @@ export class Terms {
 
     @Column({ type: "datetime" })
     dateApplied: Date;
+
+    @ManyToOne(() => User, (user) => user.email, {onDelete: 'CASCADE', eager:true})
+    user: User;
+
+    // @ManyToOne(() => User, (user) => user.contact, {onDelete: 'CASCADE', eager:true})
+    // user: User;
 
 }
