@@ -1,5 +1,5 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "./User";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { UserTerms } from "./UserTerms";
 
 @Entity({name:"terms"})
 
@@ -14,16 +14,13 @@ export class Terms {
     // @ManyToOne(() => User, (user) => user.order, {onDelete: 'CASCADE', eager:true})
     // userId: User
 
-    @Column({nullable: false, length: 25})
+    @Column({nullable: false})
     userApplied: boolean;
 
     @Column({ type: "datetime" })
     dateApplied: Date;
 
-    @ManyToOne(() => User, (user) => user.email, {onDelete: 'CASCADE', eager:true})
-    user: User;
-
-    // @ManyToOne(() => User, (user) => user.contact, {onDelete: 'CASCADE', eager:true})
-    // user: User;
+    @OneToMany(() => UserTerms, (userTerms) => userTerms.terms)
+    userTerms: UserTerms[];
 
 }

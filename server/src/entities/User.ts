@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, JoinColumn, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, JoinColumn, OneToMany, OneToOne } from "typeorm";
 import { Order } from "./Order";
 import { Contact } from "./Contact";
-import { Email } from "./Email";
+import { UserTerms } from "./UserTerms";
+import { Address } from "./Address";
 
 @Entity({name:"user"})
 export class User {
@@ -15,22 +16,22 @@ export class User {
     @Column({nullable: false, length: 25})
     userCpf: string;
 
-    @Column({nullable: false, length: 25})
-    userEmail: string;
-
-    // @Column({nullable: false, length: 70})
-    // userAddress: string;
-
     @Column({ name: 'DateCreate' })
     DateCreate: Date;
 
-    @OneToMany(() => Email, (email) => email.user)
-    email: Email[];
-
-    @OneToMany(() => Contact, (contact) => contact.user)
+    @OneToOne(() => Contact, (contact) => contact.user)
+    @JoinColumn()
     contact: Contact[];
+
+    @OneToOne(() => Address, (address) => address.user)
+    @JoinColumn()
+    address: Address[];
+
     
     @OneToMany(() => Order, (order) => order.user)
     order: Order[];
+
+    @OneToMany(() => UserTerms, (userTerms) => userTerms.user)
+    userTerms: UserTerms[];
 
 }
