@@ -1,32 +1,29 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, JoinColumn, OneToMany, OneToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, JoinColumn, OneToMany } from "typeorm";
 import { Order } from "./Order";
-import { Address } from "./Address";
-import { PhoneNumber } from "./PhoneNumber";
 
-@Entity({ name: "user" })
+@Entity({name:"user"})
 export class User {
+    // define a chave primária como auto incremento
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ nullable: false, length: 25 })
+    @Column({nullable: false, length: 25})
     userName: string;
 
-    @Column({ nullable: false, length: 25 })
+    @Column({nullable: false, length: 25})
     userCpf: string;
 
-    @Column({ nullable: false, length: 255 })
+    @Column({nullable: false, length: 25})
     userEmail: string;
 
+    @Column({nullable: false, length: 70})
+    userAddress: string;
+
     @Column({ name: 'DateCreate' })
-    dateCreate: Date;
+    DateCreate: Date;
 
-    @OneToOne(() => Address, { cascade: true, onDelete: "SET NULL", lazy: true })
-    @JoinColumn()
-    address: Address;
-
-    @OneToMany(() => PhoneNumber, (phoneNumber) => phoneNumber.user, {cascade: true, onDelete: "SET NULL", eager: false })
-    phoneNumbers: PhoneNumber[];
     
-    @OneToMany(() => Order, (order) => order.user, {onDelete: "SET NULL"})
+    @OneToMany(() => Order, (order) => order.user)
     order: Order[];
+
 }
